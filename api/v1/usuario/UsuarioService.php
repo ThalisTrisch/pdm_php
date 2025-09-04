@@ -2,30 +2,24 @@
 
 require_once('../../database/Base.php');
 
-class Tb_Usuario extends Base
-{
+class UsuarioService extends Base {
     private $id_usuario;
     private $nm_usuario;
   
-
-    function __construct($p_banco)
-    {
+    function __construct($p_banco) {
         parent::__construct($p_banco);
     }
 
-    function SetNmUsuario($p_NmUsuario)
-    {
+    function SetNmUsuario($p_NmUsuario) {
         $this->nm_usuario = $p_NmUsuario;
     }
 
-    function SetIdUsuario($p_IdUsuario)
-    {
+    function SetIdUsuario($p_IdUsuario) {
         $this->id_usuario = $p_IdUsuario;
     }
  
 
-    public function verificaExistencia()
-    {
+    public function verificaExistencia() {
         $consulta = $this->conexao->query(
             "SELECT 1 FROM Tb_Usuario where id_usuario = $this->id_usuario");
 
@@ -38,8 +32,7 @@ class Tb_Usuario extends Base
         return $ret;
     }
 
-    public function buscaUsuario()
-    {
+    public function buscaUsuario() {
 
         $sql = "SELECT * FROM tb_usuario WHERE id_usuario = " . $this->id_usuario;
 
@@ -53,13 +46,11 @@ class Tb_Usuario extends Base
     }
 
     public function Inserir(){
-        try 
-        {
+        try {
             $this->verificaExistencia();
             $this->banco->setMensagem(0, "Usuario ja Cadastrado");
         } 
-        catch (Exception $e) 
-        {
+        catch (Exception $e) {
       
             $stmt = $this->conexao->prepare("INSERT INTO TB_USUARIO(id_usuario, nm_usuario) VALUES " .
                                             "(nextval('sq_usuario'), :NmUsuario)");
@@ -75,8 +66,7 @@ class Tb_Usuario extends Base
     }
 
     public function AlterarDadosUsuario(){
-        try 
-        {
+        try {
             $this->buscaUsuario();
             $stmt = $this->conexao->prepare("UPDATE TB_Usuario  set  nm_usuario = :NmUsuario WHERE id_usuario = :IdUsuario");
             $stmt->bindValue(':IdUsuario', $this->id_usuario, PDO::PARAM_INT);
@@ -86,16 +76,13 @@ class Tb_Usuario extends Base
             $this->conexao->commit();
             $this->banco->setMensagem(1, "Dados do usuario Alterados");
         } 
-        catch (Exception $e) 
-        {
+        catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
  
-    public function Excluir()
-    {
-        try 
-        {
+    public function Excluir() {
+        try {
             $this->buscaUsuario();
             $stmt = $this->conexao->prepare(
                 'Delete From TB_Usuario ' .
@@ -108,46 +95,38 @@ class Tb_Usuario extends Base
             $this->conexao->commit();
             $this->banco->setMensagem(1, "Usuario Excluido com Sucesso");
         } 
-        catch (Exception $e) 
-        {
+        catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
 
     public function Consultar()
     {
-        try 
-        {
+        try {
             $ret = $this->buscaUsuario();
             $this->banco->setMensagem(1, "Consulta efetuada com Sucesso");
             $this->banco->setDados(count($ret), $ret);
         } 
-        catch (Exception $e) 
-        {
+        catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
     }
 
-    public function Listar()
-    {
+    public function Listar() {
         $ret = $this->conexao->query("SELECT id_usuario, nm_usuario FROM Tb_Usuario;");
         $ret = $ret->fetchAll();
         $this->banco->setMensagem(1, "Sucesso na Pesquisa");
         $this->banco->setDados(count($ret), $ret);
     }
 
-    public function Login()
-    {
-        try
-        {
+    public function Login() {
+        try {
             $ret = $this->verificaExistencia();
             $this->banco->setMensagem(1, "Login Permitido");
             $this->banco->setDados(count($ret), $ret);
         } 
-        catch (Exception $e) 
-        {
+        catch (Exception $e) {
             $this->banco->setMensagem(0, "Usuario Inexistente");
         }
     }
-
 }
