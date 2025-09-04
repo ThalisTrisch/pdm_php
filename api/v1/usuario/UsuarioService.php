@@ -1,6 +1,6 @@
 <?php
 
-require_once('../Model/Base.php');
+require_once('../../database/Base.php');
 
 class Tb_Usuario extends Base
 {
