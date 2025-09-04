@@ -1,6 +1,6 @@
 <?php
 
-require_once('..' . DIRECTORY_SEPARATOR . 'Model' . DIRECTORY_SEPARATOR . 'Base.php');
+require_once('../Model/Base.php');
 
 class Tb_Usuario extends Base
 {

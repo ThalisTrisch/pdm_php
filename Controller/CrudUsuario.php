@@ -1,8 +1,8 @@
 <?php
       
-        require_once('..'.DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Tb_Usuario.php');
+        require_once('../Model/Tb_Usuario.php');
 
-        require_once('..'.DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR.'Banco.php');
+        require_once('../Model/Banco.php');
         
         $s_nm_usuario   =  isset($_REQUEST['nm_usuario'])?$_REQUEST['nm_usuario']:"";
         $i_id_usuario   =  isset($_REQUEST['id_usuario'])?$_REQUEST['id_usuario']:"";
