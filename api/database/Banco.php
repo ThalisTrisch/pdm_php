@@ -124,7 +124,7 @@
                 }
             }
            
-            return json_encode(array("operacao"  =>$GLOBALS["Oper"],
+            return json_encode(array("operacao"  =>$GLOBALS["operacao"],
                                      "NumMens"   =>$this->NumMensagem,
                                      "Mensagem"  =>$this->Mensagem,
                                      "registros" =>$this->NumRegistros,
