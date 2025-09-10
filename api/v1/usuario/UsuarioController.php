@@ -4,8 +4,15 @@
     require_once('../../database/Banco.php');
     
     try {  
-        $jsonData = json_decode(file_get_contents("php://input"), true);
+        $request_uri = $_SERVER['REQUEST_URI'];
+        $request_method = $_SERVER['REQUEST_METHOD'];
 
+        $jsonData = json_decode(file_get_contents("php://input"), true);
+        $uri_parts = explode('/', trim($request_uri, '/'));
+        
+        // O primeiro item geralmente é a versão da API, o segundo é o recurso (ex: produtos)
+        $recurso = isset($uri_parts[5]) ? $uri_parts[5] : '';
+        
         $operacao = isset($_REQUEST['operacao']) ? $_REQUEST['operacao'] : "Não informado [Erro]";
         //$nome = isset($jsonData['nome']) ? $jsonData['nome'] :""; <- exemplo json POST
     
@@ -13,7 +20,7 @@
         
         $usuarioService = new UsuarioService($banco);
         
-        switch ($operacao) {
+        switch ($recurso) {
             case 'getUsuarios':
                 $usuarioService->getUsuarios();
                 break;   
