@@ -22,7 +22,7 @@
         
         switch ($recurso) {
             case 'getUsuarios':
-                $usuarioService->getUsuarios();
+                $usuarioService->getUsuarios($banco);
                 break;   
             default:
                 var_dump($operacao);

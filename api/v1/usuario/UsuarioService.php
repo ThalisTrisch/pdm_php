@@ -3,16 +3,15 @@
 require_once('../../database/Base.php');
 
 class UsuarioService extends Base {
-  
-    function __construct($p_banco) {
-        parent::__construct($p_banco);
-    }
 
-    public function getUsuarios() {
+    public function getUsuarios($banco) {
         $sql = "SELECT * FROM tb_usuario";
 
         $consulta = $this->conexao->query($sql);
         $ret = $consulta->fetch(PDO::FETCH_ASSOC);
+
+        $banco->setDados(0, $ret);
+
         if (!$ret) 
         {
             throw new Exception("Usuario nao Localizado");
