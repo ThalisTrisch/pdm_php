@@ -1,8 +1,8 @@
 <?php
 
-require_once('../../database/Base.php');
+require_once('./../database/Base.php');
 
-class UsuarioService extends Base {
+class Routes extends Base {
 
     public function getUsuarios($banco) {
         $sql = "SELECT * FROM tb_usuario";
@@ -16,6 +16,6 @@ class UsuarioService extends Base {
         {
             throw new Exception("Usuario nao Localizado");
         }
-        return $ret;
+        var_dump($ret);
     }
 }

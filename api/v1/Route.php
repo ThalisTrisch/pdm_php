@@ -1,31 +1,27 @@
 <?php
       
-    require_once('./UsuarioService.php');
-    require_once('../../database/Banco.php');
+    require_once('./Routes.php');
+    require_once('../database/Banco.php');
     
     try {  
         $request_uri = $_SERVER['REQUEST_URI'];
         $request_method = $_SERVER['REQUEST_METHOD'];
 
         $jsonData = json_decode(file_get_contents("php://input"), true);
-        $uri_parts = explode('/', trim($request_uri, '/'));
-        
-        // O primeiro item geralmente é a versão da API, o segundo é o recurso (ex: produtos)
-        $recurso = isset($uri_parts[5]) ? $uri_parts[5] : '';
-        
+ 
         $operacao = isset($_REQUEST['operacao']) ? $_REQUEST['operacao'] : "Não informado [Erro]";
         //$nome = isset($jsonData['nome']) ? $jsonData['nome'] :""; <- exemplo json POST
     
         $banco = new Banco(null,null,null,null,null,null);
         
-        $usuarioService = new UsuarioService($banco);
+        $routes = new Routes($banco);
         
-        switch ($recurso) {
+        switch ($operacao) {
             case 'getUsuarios':
-                $usuarioService->getUsuarios($banco);
+                $routes->getUsuarios($banco);
                 break;   
+            
             default:
-                var_dump($operacao);
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );
                 break;
         }
