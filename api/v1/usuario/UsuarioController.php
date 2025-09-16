@@ -4,18 +4,18 @@
     require_once('../../database/Banco.php');
     
     try {  
-        $jsonData = json_decode(file_get_contents("php://input"), true);
+        $jsonPostData = json_decode(file_get_contents("php://input"), true);
  
         $operacao = isset($_REQUEST['operacao']) ? $_REQUEST['operacao'] : "Não informado [Erro]";
-        //$nome = isset($jsonData['nome']) ? $jsonData['nome'] :""; <- exemplo json POST
+        //$nome = isset($jsonPostData['nome']) ? $jsonPostData['nome'] :""; <- exemplo json POST
     
         $banco = new Banco(null,null,null,null,null,null);
         
-        $routes = new UsuarioService($banco);
+        $usuarioService = new UsuarioService($banco);
         
         switch ($operacao) {
             case 'getUsuarios':
-                $routes->getUsuarios($banco);
+                $usuarioService->getUsuarios();
                 break;   
             
             default:
