@@ -1,12 +1,9 @@
 <?php
       
-    require_once('./Routes.php');
-    require_once('../database/Banco.php');
+    require_once('./UsuarioService.php');
+    require_once('../../database/Banco.php');
     
     try {  
-        $request_uri = $_SERVER['REQUEST_URI'];
-        $request_method = $_SERVER['REQUEST_METHOD'];
-
         $jsonData = json_decode(file_get_contents("php://input"), true);
  
         $operacao = isset($_REQUEST['operacao']) ? $_REQUEST['operacao'] : "Não informado [Erro]";
@@ -14,7 +11,7 @@
     
         $banco = new Banco(null,null,null,null,null,null);
         
-        $routes = new Routes($banco);
+        $routes = new UsuarioService($banco);
         
         switch ($operacao) {
             case 'getUsuarios':
