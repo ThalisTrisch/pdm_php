@@ -1,22 +1,21 @@
 <?php
 
-require_once('../../database/Base.php');
+require_once('../../database/InstanciaBanco.php');
 
-class UsuarioService extends Base {
-
-    public function getUsuarios($banco) {
+class UsuarioService extends InstanciaBanco {
+    public function getUsuarios() {
         $sql = "SELECT * FROM tb_usuario";
 
         $consulta = $this->conexao->query($sql);
-        $ret = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        $retorno = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
-        $banco->setDados(0, $ret);
+        $this->banco->setDados(count($retorno), $retorno);
 
-        if (!$ret) 
+        if (!$retorno) 
         {
             throw new Exception("Usuario nao Localizado");
         }
-        return $ret;
+        return $retorno;
     }
 
     public function getUsuario($banco) {
