@@ -11,13 +11,21 @@
     
         $banco = new Banco(null,null,null,null,null,null);
         
-        $routes = new UsuarioService($banco);
+        $UsuarioService = new UsuarioService($banco);
         
         switch ($operacao) {
             case 'getUsuarios':
-                $routes->getUsuarios($banco);
+                $UsuarioService->getUsuarios($banco);
                 break;   
-            
+            case 'getUsuario':
+                $UsuarioService->getUsuario($banco);
+                break;
+            case 'createUsuario':
+                $UsuarioService->newUsuario($banco);
+                break;
+            case 'deleteUsuario':
+                $UsuarioService->deleteUsuario($banco);
+                break;
             default:
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );
                 break;
