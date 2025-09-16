@@ -15,16 +15,16 @@
         
         switch ($operacao) {
             case 'getUsuarios':
-                $usuarioService->getUsuarios($banco);
+                $usuarioService->getUsuarios();
                 break;   
             case 'getUsuario':
-                $UsuarioService->getUsuario($banco);
+                $usuarioService->getUsuario();
                 break;
             case 'createUsuario':
-                $UsuarioService->newUsuario($banco);
+                $usuarioService->newUsuario();
                 break;
             case 'deleteUsuario':
-                $UsuarioService->deleteUsuario($banco);
+                $usuarioService->deleteUsuario();
                 break;
             default:
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );
