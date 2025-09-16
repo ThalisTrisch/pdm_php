@@ -5,10 +5,9 @@
     
     try {  
         $jsonPostData = json_decode(file_get_contents("php://input"), true);
- 
         $operacao = isset($_REQUEST['operacao']) ? $_REQUEST['operacao'] : "Não informado [Erro]";
         //$nome = isset($jsonPostData['nome']) ? $jsonPostData['nome'] :""; <- exemplo json POST
-    
+        
         $banco = new Banco(null,null,null,null,null,null);
         
         $usuarioService = new UsuarioService($banco);
@@ -25,6 +24,9 @@
                 break;
             case 'deleteUsuario':
                 $usuarioService->deleteUsuario();
+                break;
+            case 'login':
+                $usuarioService->login(dados: $dados);
                 break;
             default:
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );

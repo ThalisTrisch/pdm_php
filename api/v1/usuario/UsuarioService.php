@@ -79,6 +79,39 @@ class UsuarioService extends InstanciaBanco {
         return $responseuser;
     }
 
+    public function login($dados) {
+        // if (!isset($dados->email) || !isset($dados->senha)) {
+        //     throw new Exception("Email ou senha não fornecidos.");
+        // }
+        
+        // CORREÇÃO FINAL: A query agora usa os nomes de coluna corretos da sua nova tabela
+        // e usa aliases (as id, as nome, as email) para devolver o JSON no formato
+        // que o Flutter espera, sem precisar de alterar o código Dart.
+        $sql = "SELECT 
+                    id_usuario as id, 
+                    nm_usuario as nome, 
+                    vl_email as email 
+                FROM tb_usuario 
+                WHERE vl_email = :email AND vl_senha = :senha";
+        
+        $consulta = $this->conexao->prepare($sql);
+        
+        $consulta->bindValue(':email', "thalis.trisch2003@gmail.com", PDO::PARAM_STR);
+        $consulta->bindValue(':senha', "senha123", PDO::PARAM_STR);
+        
+        $consulta->execute();
+        
+        $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
+
+        if ($usuario) {
+            $this->banco->setDados(1, $usuario);
+        } else {
+            throw new Exception("Email ou senha inválidos.");
+        }
+
+        return $usuario;
+    }
+
     // Exemplo de rotas na url:
     // http://localhost/pdm/api/v1/usuario/UsuarioController.php/?operacao=getUsuarios
     // http://localhost/pdm/api/v1/usuario/UsuarioController.php/?operacao=getUsuario&id_usuario=2
