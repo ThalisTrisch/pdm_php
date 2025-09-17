@@ -26,10 +26,13 @@
             case 'deleteUsuario':
                 $UsuarioService->deleteUsuario($banco);
                 break;
+            case 'login':
+                $usuarioService->login(dados: $dados);
+                break;
             default:
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );
                 break;
-        }
+            }
 
         echo $banco->getRetorno();
         unset($banco);
