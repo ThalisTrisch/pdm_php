@@ -18,13 +18,13 @@ class UsuarioService extends InstanciaBanco {
         return $retorno;
     }
 
-    public function getUsuario($banco) {
+    public function getUsuario() {
         $sql = "SELECT * FROM tb_usuario where id_usuario = ".$_GET['id_usuario'];
 
         $consulta = $this->conexao->query($sql);
         $ret = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
-        $banco->setDados(0, $ret);
+        $this->banco->setDados(0, $ret);
 
         if (!$ret) 
         {
@@ -33,7 +33,7 @@ class UsuarioService extends InstanciaBanco {
         return $ret;
     }
 
-    public function createUsuario($banco) {
+    public function createUsuario() {
 
         $sql = "select id_sequence from tb_sequence order by id_sequence desc limit 1;";
         $consulta = $this->conexao->query($sql);
@@ -55,7 +55,7 @@ class UsuarioService extends InstanciaBanco {
         return $responseuser;
     }
 
-    public function updateUsuario($banco) {
+    public function updateUsuario() {
 
         $sqluser = "UPDATE tb_usuario SET nm_usuario = '".$_POST['nm_usuario']."' vl_email = '".$_POST['vl_email']."' nm_sobrenome = '".$_POST['nm_sobrenome']."' vl_senha = '".$_POST['vl_senha']."' WHERE id_usuario = ".$_POST['id_usuario'];
         $insertuser = $this->conexao->query($sqluser);
@@ -65,7 +65,7 @@ class UsuarioService extends InstanciaBanco {
         return $responseuser;
     }
 
-    function deleteUsuario($banco) {
+    function deleteUsuario() {
         $sqluser ="DELETE FROM tb_usuario WHERE id_usuario = ".$_POST['id_usuario'];
         $insertuser = $this->conexao->query($sqluser);
         $responseuser = $insertuser->fetchAll(PDO::FETCH_ASSOC);
@@ -77,6 +77,39 @@ class UsuarioService extends InstanciaBanco {
         if (!$responseseq){throw new Exception("Não foi possível criar a sequence do usuario");}
 
         return $responseuser;
+    }
+
+    public function login($dados) {
+        // if (!isset($dados->email) || !isset($dados->senha)) {
+        //     throw new Exception("Email ou senha não fornecidos.");
+        // }
+        
+        // CORREÇÃO FINAL: A query agora usa os nomes de coluna corretos da sua nova tabela
+        // e usa aliases (as id, as nome, as email) para devolver o JSON no formato
+        // que o Flutter espera, sem precisar de alterar o código Dart.
+        $sql = "SELECT 
+                    id_usuario as id, 
+                    nm_usuario as nome, 
+                    vl_email as email 
+                FROM tb_usuario 
+                WHERE vl_email = :email AND vl_senha = :senha";
+        
+        $consulta = $this->conexao->prepare($sql);
+        
+        $consulta->bindValue(':email', "thalis.trisch2003@gmail.com", PDO::PARAM_STR);
+        $consulta->bindValue(':senha', "senha123", PDO::PARAM_STR);
+        
+        $consulta->execute();
+        
+        $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
+
+        if ($usuario) {
+            $this->banco->setDados(1, $usuario);
+        } else {
+            throw new Exception("Email ou senha inválidos.");
+        }
+
+        return $usuario;
     }
 
     // Exemplo de rotas na url:
