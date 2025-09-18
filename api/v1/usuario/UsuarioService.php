@@ -80,13 +80,16 @@ class UsuarioService extends InstanciaBanco {
     }
 
     public function login($dados) {
-        // if (!isset($dados->email) || !isset($dados->senha)) {
-        //     throw new Exception("Email ou senha não fornecidos.");
-        // }
-
         // CORREÇÃO FINAL: A query agora usa os nomes de coluna corretos da sua nova tabela
         // e usa aliases (as id, as nome, as email) para devolver o JSON no formato
         // que o Flutter espera, sem precisar de alterar o código Dart.
+        $email = $dados['email'];
+        $senha = $dados['senha'];
+
+        if (!isset($email) || !isset($senha)) {
+            throw new Exception("Email ou senha não fornecidos.");
+        }
+
         $sql = "SELECT 
                     id_usuario as id, 
                     nm_usuario as nome, 
@@ -95,10 +98,8 @@ class UsuarioService extends InstanciaBanco {
                 WHERE vl_email = :email AND vl_senha = :senha";
 
         $consulta = $this->conexao->prepare($sql);
-        
-        $consulta->bindValue(':email', "thalis.trisch2003@gmail.com", PDO::PARAM_STR);
-        $consulta->bindValue(':senha', "senha123", PDO::PARAM_STR);
-
+        $consulta->bindValue(':email', $email, PDO::PARAM_STR);
+        $consulta->bindValue(':senha', $senha, PDO::PARAM_STR);
         $consulta->execute();
 
         $usuario = $consulta->fetch(PDO::FETCH_ASSOC);

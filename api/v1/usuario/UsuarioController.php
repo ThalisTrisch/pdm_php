@@ -12,7 +12,7 @@
         $banco = new Banco(null,null,null,null,null,null);
         
         $usuarioService = new UsuarioService($banco);
-        
+
         switch ($operacao) {
             case 'getUsuarios':
                 $usuarioService->getUsuarios($banco);
@@ -27,7 +27,7 @@
                 $UsuarioService->deleteUsuario($banco);
                 break;
             case 'login':
-                $usuarioService->login(dados: $dados);
+                $usuarioService->login(dados: $_POST);
                 break;
             default:
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );

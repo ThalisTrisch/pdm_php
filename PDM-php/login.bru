@@ -1,0 +1,19 @@
+meta {
+  name: login
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost/pdm/api/v1/usuario/UsuarioController.php/?operacao=login
+  body: none
+  auth: inherit
+}
+
+params:query {
+  operacao: login
+}
+
+settings {
+  encodeUrl: true
+}
