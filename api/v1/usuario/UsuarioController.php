@@ -7,27 +7,37 @@
         $jsonPostData = json_decode(file_get_contents("php://input"), true);
  
         $operacao = isset($_REQUEST['operacao']) ? $_REQUEST['operacao'] : "Não informado [Erro]";
-        //$nome = isset($jsonPostData['nome']) ? $jsonPostData['nome'] :""; <- exemplo json POST
-    
+
         $banco = new Banco(null,null,null,null,null,null);
         
         $usuarioService = new UsuarioService($banco);
 
         switch ($operacao) {
             case 'getUsuarios':
-                $usuarioService->getUsuarios($banco);
+                $usuarioService->getUsuarios();
                 break;   
             case 'getUsuario':
-                $UsuarioService->getUsuario($banco);
+                $usuarioService->getUsuario();
                 break;
             case 'createUsuario':
-                $UsuarioService->newUsuario($banco);
+
+                $nu_cpf = isset($jsonPostData['nu_cpf']) ? $jsonPostData['nu_cpf'] : "";
+                $nm_usuario = isset($jsonPostData['nm_usuario']) ? $jsonPostData['nm_usuario'] : "";
+                $vl_email = isset($jsonPostData['vl_email']) ? $jsonPostData['vl_email'] : "";
+                $nm_sobrenome = isset($jsonPostData['nm_sobrenome']) ? $jsonPostData['nm_sobrenome'] : "";
+                $vl_senha = isset($jsonPostData['vl_senha']) ? $jsonPostData['vl_senha'] : "";
+
+                $usuarioService->createUsuario($nu_cpf, $nm_usuario, $vl_email, $nm_sobrenome, $vl_senha);
                 break;
             case 'deleteUsuario':
-                $UsuarioService->deleteUsuario($banco);
+                $usuarioService->deleteUsuario($jsonPostData);
                 break;
             case 'login':
-                $usuarioService->login(dados: $_POST);
+
+                $email = isset($jsonPostData['email']) ? $jsonPostData['email'] :"";
+                $senha = isset($jsonPostData["senha"]) ? $jsonPostData["senha"] : "";
+
+                $usuarioService->login($email, $senha);
                 break;
             default:
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );

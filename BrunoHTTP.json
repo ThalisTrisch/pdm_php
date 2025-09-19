@@ -1,0 +1,228 @@
+{
+  "name": "BrunoHTTP",
+  "version": "1",
+  "items": [
+    {
+      "type": "folder",
+      "name": "pdm",
+      "items": [
+        {
+          "type": "http",
+          "name": "get refeicoes",
+          "seq": 3,
+          "request": {
+            "url": "http://localhost/pdm_php/api/v1/refeicao/refeicaoController.php/?operacao=getRefeicoes",
+            "method": "GET",
+            "headers": [],
+            "params": [
+              {
+                "name": "operacao",
+                "value": "getRefeicoes",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "get usuario",
+          "seq": 2,
+          "request": {
+            "url": "http://localhost/pdm_php/api/v1/usuario/UsuarioController.php/?operacao=getUsuario&id_usuario=1",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "operacao",
+                "value": "getUsuario",
+                "type": "query",
+                "enabled": true
+              },
+              {
+                "name": "id_usuario",
+                "value": "1",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "get usuarios",
+          "seq": 1,
+          "request": {
+            "url": "http://localhost/pdm_php/api/v1/usuario/UsuarioController.php?operacao=getUsuarios",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "operacao",
+                "value": "getUsuarios",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "login",
+          "seq": 4,
+          "request": {
+            "url": "http://localhost/pdm_php/api/v1/usuario/UsuarioController.php?operacao=login",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "operacao",
+                "value": "login",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"email\": \"thalis.trisch2003@gmail.com\",\n  \"senha\": \"senha123\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "create usuario",
+          "seq": 5,
+          "request": {
+            "url": "",
+            "method": "POST",
+            "headers": [],
+            "params": [],
+            "body": {
+              "mode": "none",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        },
+        {
+          "type": "http",
+          "name": "delete usuario",
+          "seq": 6,
+          "request": {
+            "url": "http://localhost/pdm_php/api/v1/usuario/UsuarioController.php?operacao=createUsuario",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/x-www-form-urlencoded",
+                "enabled": true
+              }
+            ],
+            "params": [
+              {
+                "name": "operacao",
+                "value": "createUsuario",
+                "type": "query",
+                "enabled": true
+              }
+            ],
+            "body": {
+              "mode": "json",
+              "json": "{\n  \"nu_cpf\": \"nu_cpf18\",\n  \"nm_usuario\": \"nm_usuario\",\n  \"vl_email\": \"vl_email18\",\n  \"nm_sobrenome\": \"nm_sobrenome\",\n  \"vl_senha\": \"vl_senha\"\n}",
+              "formUrlEncoded": [],
+              "multipartForm": []
+            },
+            "script": {},
+            "vars": {},
+            "assertions": [],
+            "tests": "",
+            "auth": {
+              "mode": "none"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "environments": [],
+  "brunoConfig": {
+    "version": "1",
+    "name": "BrunoHTTP",
+    "type": "collection",
+    "ignore": [
+      "node_modules",
+      ".git"
+    ]
+  }
+}
