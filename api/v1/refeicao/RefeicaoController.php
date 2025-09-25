@@ -16,7 +16,15 @@
             case 'getRefeicoes':
                 $refeicaoService->getRefeicoes();
                 break;   
-            
+            case 'createRefeicao':
+                $refeicaoService->getRefeicoes();
+                break;
+            case 'updateRefeicao':
+                $refeicaoService->getRefeicoes();
+                break;    
+            case 'deleteRefeicao':
+                $refeicaoService->getRefeicoes();
+                break; 
             default:
                 $banco->setMensagem(1, 'Operação informada não tratada. Operação=' . $operacao);
                 break;
