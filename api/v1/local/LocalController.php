@@ -2,7 +2,8 @@
       
     require_once('./LocalService.php');
     require_once('../../database/Banco.php');
-    
+    require_once('LocalValidacao.php');
+
     try {  
         $jsonPostData = json_decode(file_get_contents("php://input"), true);
 
@@ -16,14 +17,19 @@
             case 'getLocal':
                 $LocalService->getLocal();
                 break;   
+            case 'getLocais':
+                $LocalService->getLocais();
+                break;  
             case 'createLocal':
-                $LocalService->getRefeicoes();
-                break;
-            case 'updateLocal':
-                $LocalService->getRefeicoes();
+                $nu_cep = isset($jsonPostData['nu_cep']) ? $jsonPostData['nu_cep'] : "";
+                $nu_casa = isset($jsonPostData['nu_casa']) ? $jsonPostData['nu_casa'] : "";
+                $id_usuario = isset($jsonPostData['id_usuario']) ? $jsonPostData['id_usuario'] : "";
+                $nu_cnpj = isset($jsonPostData['nu_cnpj']) ? $jsonPostData['nu_cnpj'] : "";
+                validaDados($nu_cep, $nu_casa, $id_usuario, $nu_cnpj);
+                $LocalService->createLocal($nu_cep, $nu_casa, $id_usuario, $nu_cnpj);
                 break;    
             case 'deleteLocal':
-                $LocalService->getRefeicoes();
+                $LocalService->deleteLocal();
                 break; 
             default:
                 $banco->setMensagem(1, 'Operação informada não tratada. Operação=' . $operacao);

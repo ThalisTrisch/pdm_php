@@ -48,11 +48,12 @@ class UsuarioService extends InstanciaBanco {
         $consulta = $this->conexao->query($sql);
         $maiorid = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
-        $novoid = $maiorid[0]['id_sequence'] + 1;
+        
         if (!$maiorid){
             throw new Exception("Maior id não localizado");
         }
-
+        
+        $novoid = $maiorid[0]['id_sequence'] + 1;
         $sqlseq ="INSERT INTO tb_sequence (id_sequence, nm_sequence) VALUES (".$novoid.", 'U')";
         $insertseq = $this->conexao->query($sqlseq);
         $responseseq = $insertseq->fetchAll(PDO::FETCH_ASSOC);
@@ -82,72 +83,68 @@ class UsuarioService extends InstanciaBanco {
         $this->banco->setDados(1, $responseUsuarioCriado);
     }
 
-    public function updateUsuario($dados) {
-        $nu_cpf; $nm_usuario; $vl_email; $nm_sobrenome; $vl_senha;$id_usuario;
-        // if (isset($dados['nm_usuario'])) {
-        //     throw new Exception("fornecido.");
-        // }else{
-        //     throw new Exception("Campo 'nm_usuario' não fornecido.");
-        // }
-        if (!isset($dados['id_usuario'])) {
-            throw new Exception("Campo id não fornecido.");
-        }else{
-            $id_usuario = $dados['id_usuario'];
-        }
-
-        $sqluser = "SELECT * FROM tb_usuario where id_usuario = ".$dados['id_usuario'];
-        $insertuser = $this->conexao->query($sqluser);
-        $responseuser = $insertuser->fetchAll(PDO::FETCH_ASSOC);
-
-        if (isset($updateData['nu_cpf'])) {
-            $nu_cpf = $responseuser[0]['nu_cpf'];
-            if(strlen($nu_cpf) < 11 || strlen($nu_cpf) > 11){
-                throw new Exception("Campo 'cpf' inválido. Deve conter 11 caracteres.");
-            }
-        }else{
-            $nu_cpf = $dados['nu_cpf'];
-        }
-        if (isset($dados['nm_usuario'])) {
-            $nm_usuario = $responseuser[0]['nm_usuario'];
-        }
-        if (isset($dados['vl_email'])) {
-            $vl_email = $responseuser[0]['vl_email'];
-        }
-        if (isset($dados['nm_sobrenome'])) {
-            $nm_sobrenome = $responseuser[0]['nm_sobrenome'];
-        }
-        if (isset($dados['vl_senha'])) {
-            $vl_senha = $responseuser[0]['vl_senha'];
-            if(strlen($vl_senha) < 6){
-                throw new Exception("Campo 'senha' inválido. Deve conter no mínimo 6 caracteres.");
-            }
-        }else{
-            $metodo_criptografia = 'aes-256-cbc';
-            $chave = 'sua_chave_secreta_de_32_bytes';
-            $iv = '1234567891234567';
-            $vl_senha = openssl_encrypt($updateData['vl_senha'], $metodo_criptografia, $chave, 0, $iv);
-            $vl_senha = password_hash($vl_senha, PASSWORD_BCRYPT, $options = ['cost' => 8]);
-        }
-        if (!filter_var($vl_email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Campo 'email' inválido.");
-        }
-        $sqluser = "update from tb_usuario set nu_cpf = :nu_cpf  nm_usuario = :nm_usuario vl_email = :vl_email 
-        nm_sobrenome = :nm_sobrenome, vl_senha = :vl_senha where id_usuario = :id_usuario";
+    // public function updateUsuario($dados) {
+    //     $nu_cpf; $nm_usuario; $vl_email; $nm_sobrenome; $vl_senha;$id_usuario;
         
-        $updateuser = $this->conexao->prepare($sqluser);
-        var_dump($nu_cpf);
-        $updateuser->bindValue(':id_usuario', $id_usuario , PDO::PARAM_INT);
-        $updateuser->bindValue(':nu_cpf', $nu_cpf, PDO::PARAM_STR);
-        $updateuser->bindValue(':nm_usuario', $nm_usuario, PDO::PARAM_STR);
-        $updateuser->bindValue(':vl_email', $vl_email, PDO::PARAM_STR);
-        $updateuser->bindValue(':nm_sobrenome', $nm_sobrenome, PDO::PARAM_STR);
-        $updateuser->bindValue(':vl_senha', $vl_senha, PDO::PARAM_STR);
-        $updateuser->execute();
+    //     if (!isset($dados['id_usuario'])) {
+    //         throw new Exception("Campo id não fornecido.");
+    //     }else{
+    //         $id_usuario = $dados['id_usuario'];
+    //     }
 
-        if (!$updateuser){throw new Exception("Não foi possível atualizar informaçoes");}
+    //     $sqluser = "SELECT * FROM tb_usuario where id_usuario = ".$dados['id_usuario'];
+    //     $insertuser = $this->conexao->query($sqluser);
+    //     $responseuser = $insertuser->fetchAll(PDO::FETCH_ASSOC);
 
-        return $updateuser;
-    }
+    //     if (isset($updateData['nu_cpf'])) {
+    //         $nu_cpf = $responseuser[0]['nu_cpf'];
+    //         if(strlen($nu_cpf) < 11 || strlen($nu_cpf) > 11){
+    //             throw new Exception("Campo 'cpf' inválido. Deve conter 11 caracteres.");
+    //         }
+    //     }else{
+    //         $nu_cpf = $dados['nu_cpf'];
+    //     }
+    //     if (isset($dados['nm_usuario'])) {
+    //         $nm_usuario = $responseuser[0]['nm_usuario'];
+    //     }
+    //     if (isset($dados['vl_email'])) {
+    //         $vl_email = $responseuser[0]['vl_email'];
+    //     }
+    //     if (isset($dados['nm_sobrenome'])) {
+    //         $nm_sobrenome = $responseuser[0]['nm_sobrenome'];
+    //     }
+    //     if (isset($dados['vl_senha'])) {
+    //         $vl_senha = $responseuser[0]['vl_senha'];
+    //         if(strlen($vl_senha) < 6){
+    //             throw new Exception("Campo 'senha' inválido. Deve conter no mínimo 6 caracteres.");
+    //         }
+    //     }else{
+    //         $metodo_criptografia = 'aes-256-cbc';
+    //         $chave = 'sua_chave_secreta_de_32_bytes';
+    //         $iv = '1234567891234567';
+    //         $vl_senha = openssl_encrypt($updateData['vl_senha'], $metodo_criptografia, $chave, 0, $iv);
+    //         $vl_senha = password_hash($vl_senha, PASSWORD_BCRYPT, $options = ['cost' => 8]);
+    //     }
+    //     if (!filter_var($vl_email, FILTER_VALIDATE_EMAIL)) {
+    //         throw new Exception("Campo 'email' inválido.");
+    //     }
+    //     $sqluser = "update from tb_usuario set nu_cpf = :nu_cpf  nm_usuario = :nm_usuario vl_email = :vl_email 
+    //     nm_sobrenome = :nm_sobrenome, vl_senha = :vl_senha where id_usuario = :id_usuario";
+        
+    //     $updateuser = $this->conexao->prepare($sqluser);
+    //     var_dump($nu_cpf);
+    //     $updateuser->bindValue(':id_usuario', $id_usuario , PDO::PARAM_INT);
+    //     $updateuser->bindValue(':nu_cpf', $nu_cpf, PDO::PARAM_STR);
+    //     $updateuser->bindValue(':nm_usuario', $nm_usuario, PDO::PARAM_STR);
+    //     $updateuser->bindValue(':vl_email', $vl_email, PDO::PARAM_STR);
+    //     $updateuser->bindValue(':nm_sobrenome', $nm_sobrenome, PDO::PARAM_STR);
+    //     $updateuser->bindValue(':vl_senha', $vl_senha, PDO::PARAM_STR);
+    //     $updateuser->execute();
+
+    //     if (!$updateuser){throw new Exception("Não foi possível atualizar informaçoes");}
+
+    //     return $updateuser;
+    // }
 
     public function deleteUsuario($dados) {
 
