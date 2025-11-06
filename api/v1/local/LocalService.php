@@ -4,7 +4,7 @@ require_once('../../database/InstanciaBanco.php');
 
 class LocalService extends InstanciaBanco {
     public function getLocal() {
-        $sql = "SELECT * from tb_local where id_local = ".$_GET['id_local'];
+        $sql = "SELECT * from tb_local_dn where id_local = ".$_GET['id_local'];
 
         $consulta = $this->conexao->query($sql);
         $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -17,8 +17,23 @@ class LocalService extends InstanciaBanco {
         return $resultados;
     }
 
-    public function createLocal($nu_cep, $nu_casa, $id_usuario, $nu_cnpj) {
-        $sql = "select id_sequence from tb_sequence order by id_sequence desc limit 1;";
+    public function getLocais() {
+         
+        $sql = "SELECT * from tb_local_dn";
+
+        $consulta = $this->conexao->query($sql);
+        $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        $this->banco->setDados(count($resultados), $resultados);
+
+        if (!$resultados) {
+            $this->banco->setDados(0, []);
+        }
+        
+        return $resultados;
+    }
+
+    public function createLocal($nu_cep, $nu_casa, $id_usuario, $nu_cnpj, $dc_complemento) {
+        $sql = "select id_sequence from tb_sequence_dn order by id_sequence desc limit 1;";
         $consulta = $this->conexao->query($sql);
         $maiorid = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
@@ -27,12 +42,11 @@ class LocalService extends InstanciaBanco {
         }
         $novo_id = $maiorid[0]['id_sequence'] + 1;
         
-        $sqlseq ="INSERT INTO tb_sequence (id_sequence, nm_sequence) VALUES (".$novo_id.", 'L')";
+        $sqlseq ="INSERT INTO tb_sequence_dn (id_sequence, nm_sequence) VALUES (".$novo_id.", 'L')";
         $insertseq = $this->conexao->query($sqlseq);
         $responseseq = $insertseq->fetchAll(PDO::FETCH_ASSOC);
         if (!$responseseq){throw new Exception("Não foi possível criar a sequence do usuario");}
-
-        $sql = "INSERT INTO tb_local (id_local, id_usuario, nu_cep, nu_casa, nu_cnpj) VALUES (:id_local, :id_usuario, :nu_cep, :nu_casa, :nu_cnpj);";
+        $sql = "INSERT INTO tb_local_dn (id_local, id_usuario, nu_cep, nu_casa, nu_cnpj,dc_complemento) VALUES (:id_local, :id_usuario, :nu_cep, :nu_casa, :nu_cnpj,:dc_complemento)";
 
         $insertlocal = $this->conexao->prepare($sql);
 
@@ -41,6 +55,7 @@ class LocalService extends InstanciaBanco {
         $insertlocal->bindValue(':nu_cnpj', $nu_cnpj, PDO::PARAM_STR);
         $insertlocal->bindValue(':nu_cep', $nu_cep, PDO::PARAM_STR);
         $insertlocal->bindValue(':nu_casa', $nu_casa, PDO::PARAM_STR);
+        $insertlocal->bindValue(':dc_complemento', $dc_complemento, PDO::PARAM_STR);
         $resultados = $insertlocal->execute();
 
         if ($resultados) {
@@ -52,18 +67,15 @@ class LocalService extends InstanciaBanco {
     }
     
     
-    public function deleteLocal() {
-        $sql = "DELETE FROM tb_local WHERE id_local = ".$_POST['id_local']." CASCADE";
+    public function deleteLocal($id_local) {
+        $sql = "DELETE FROM tb_local_dn WHERE id_local = ".$id_local;
 
-        $consulta = $this->conexao->query($sql);
-        $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
-        $this->banco->setDados(count($resultados), $resultados);
+        $deleteuser = $this->conexao->query($sql);
+        $responseuser = $deleteuser->fetchAll(PDO::FETCH_ASSOC);
+        if (!$responseuser){throw new Exception("Não foi possível deletar usuário");}
 
-        if (!$resultados) {
-            $this->banco->setDados(0, []);
-        }
-        
-        return $resultados;
+        $this->banco->setMensagem(1, "Deletado com sucesso");
+        return $responseuser;
     }
 
     // Exemplo de rotas na url:

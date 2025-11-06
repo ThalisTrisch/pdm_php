@@ -1,6 +1,6 @@
 <?php
       
-    require_once('./LocalService.php');
+    require_once('./AvaliacaoService.php');
     require_once('../../database/Banco.php');
 
     try {  
@@ -10,27 +10,22 @@
     
         $banco = new Banco(null,null,null,null,null,null);
         
-        $LocalService = new LocalService($banco);
+        $AvaliacaoService = new AvaliacaoService($banco);
         
         switch ($operacao) {
-            case 'getLocal':
-                $LocalService->getLocal();
+            case 'getAvaliacao':
+                $AvaliacaoService->getAvaliacao();
                 break;   
-            case 'getLocais':
-                $LocalService->getLocais();
+            case 'getAvaliacoes':
+                $AvaliacaoService->getAvaliacoes();
                 break;  
-            case 'createLocal':
-                $nu_cep = isset($_POST['nu_cep']) ? $_POST['nu_cep'] : throw new Exception("campo nu_cep não fornecido");
-                $nu_casa = isset($_POST['nu_casa']) ? $_POST['nu_casa'] : throw new Exception("campo nu_casa não fornecido");
+            case 'createAvaliacao':
                 $id_usuario = isset($_POST['id_usuario']) ? $_POST['id_usuario'] : throw new Exception("campo id_usuario não fornecido");
-                $nu_cnpj = isset($_POST['nu_cnpj']) ? $_POST['nu_cnpj'] : throw new Exception("campo nu_cnpj não fornecido");
-                $dc_complemento = isset($_POST['dc_complemento']) ? $_POST['dc_complemento'] : null;
-                $LocalService->createLocal($nu_cep, $nu_casa, $id_usuario, $nu_cnpj, $dc_complemento);
+                $id_encontro = isset($_POST['id_encontro']) ? $_POST['id_encontro'] : throw new Exception("campo id_encontro não fornecido");
+                $id_avaliacao = isset($_POST['id_avaliacao']) ? $_POST['id_avaliacao'] : throw new Exception("campo id_avaliacao não fornecido");
+                $vl_avaliacao = isset($_POST['vl_avaliacao']) ? $_POST['vl_avaliacao'] : throw new Exception("campo vl_avaliacao não fornecido");
+                $AvaliacaoService->createAvaliacao($id_usuario, $id_encontro, $vl_avaliacao, $id_avaliacao);
                 break;    
-            case 'deleteLocal':
-                $id_local = isset($_POST['id_local']) ? $_POST['id_local'] : throw new Exception("campo id_local não fornecido");
-                $LocalService->deleteLocal($id_local);
-                break; 
             default:
                 $banco->setMensagem(1, 'Operação informada não tratada. Operação=' . $operacao);
                 break;

@@ -2,11 +2,10 @@
       
     require_once('UsuarioService.php');
     require_once('../../database/Banco.php');
-    require_once('UsuarioValidacao.php');
 
     try {  
-        $jsonPostData = json_decode(file_get_contents("php://input"), true);
- 
+        $postdata = json_decode(file_get_contents("php://input"), true);
+
         $operacao = isset($_REQUEST['operacao']) ? $_REQUEST['operacao'] : "Não informado [Erro]";
 
         $banco = new Banco(null,null,null,null,null,null);
@@ -21,22 +20,22 @@
                 $usuarioService->getUsuario();
                 break;
             case 'createUsuario':
-                $nu_cpf = isset($jsonPostData['nu_cpf']) ? $jsonPostData['nu_cpf'] : "";
-                $nm_usuario = isset($jsonPostData['nm_usuario']) ? $jsonPostData['nm_usuario'] : "";
-                $vl_email = isset($jsonPostData['vl_email']) ? $jsonPostData['vl_email'] : "";
-                $nm_sobrenome = isset($jsonPostData['nm_sobrenome']) ? $jsonPostData['nm_sobrenome'] : "";
-                $vl_senha = isset($jsonPostData['vl_senha']) ? $jsonPostData['vl_senha'] : "";
-                validaDados($nu_cpf, $nm_usuario, $vl_email, $nm_sobrenome, $vl_senha);
+                $nu_cpf = isset($_POST['nu_cpf']) ? $_POST['nu_cpf'] :  throw new Exception("nu_cpf não definido");
+                $nm_usuario = isset($_POST['nm_usuario']) ? $_POST['nm_usuario'] :  throw new Exception("nm_usuario não definido");
+                $vl_email = isset($_POST['vl_email']) ? $_POST['vl_email'] :  throw new Exception("vl_email não definido");
+                $nm_sobrenome = isset($_POST['nm_sobrenome']) ? $_POST['nm_sobrenome'] :  throw new Exception("nm_sobrenome não definido");
+                $vl_senha = isset($_POST['vl_senha']) ? $_POST['vl_senha'] : throw new Exception("vl_senha não definido");
+
                 $usuarioService->createUsuario($nu_cpf, $nm_usuario, $vl_email, $nm_sobrenome, $vl_senha);
                 break;
             case 'deleteUsuario':
-                $usuarioService->deleteUsuario($jsonPostData);
+                $usuarioService->deleteUsuario($_POST);
                 break;
             case 'updateUsuario':
-                $usuarioService->updateUsuario(dados: $jsonPostData);
+                $usuarioService->updateUsuario(dados: $_POST);
                 break;
             case 'loginUsuario':
-                $usuarioService->loginUsuario(loginData: $jsonPostData);
+                $usuarioService->loginUsuario(loginData: $_POST);
                 break;
             default:
                 $banco->setMensagem(1,'Operacão informada nao tratada. Operação=' . $operacao );

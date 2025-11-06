@@ -5,7 +5,7 @@ require_once('../../database/InstanciaBanco.php');
 
 class UsuarioService extends InstanciaBanco {
     public function getUsuarios() {
-        $sql = "SELECT * FROM tb_usuario";
+        $sql = "SELECT * FROM tb_usuario_dn";
 
         $consulta = $this->conexao->query($sql);
         $retorno = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -20,7 +20,7 @@ class UsuarioService extends InstanciaBanco {
     }
 
     public function getUsuario() {
-        $sql = "SELECT * FROM tb_usuario where id_usuario = ".$_GET['id_usuario'];
+        $sql = "SELECT * FROM tb_usuario_dn where id_usuario = ".$_GET['id_usuario'];
 
         $consulta = $this->conexao->query($sql);
         $ret = $consulta->fetchAll(PDO::FETCH_ASSOC);
@@ -35,7 +35,7 @@ class UsuarioService extends InstanciaBanco {
     }
 
     public function createUsuario($nu_cpf, $nm_usuario, $vl_email, $nm_sobrenome, $vl_senha) {
-        $sqlCheck = "SELECT COUNT(*) as total FROM tb_usuario WHERE nu_cpf = :nu_cpf OR vl_email = :vl_email";
+        $sqlCheck = "SELECT COUNT(*) as total FROM tb_usuario_dn WHERE nu_cpf = :nu_cpf OR vl_email = :vl_email";
         $stmtCheck = $this->conexao->prepare($sqlCheck);
         $stmtCheck->execute([':nu_cpf' => $nu_cpf,':vl_email' => $vl_email]);
 
@@ -44,35 +44,42 @@ class UsuarioService extends InstanciaBanco {
             throw new Exception ("Já existe um usuário com este CPF ou email.");
         }
 
-        $sql = "select id_sequence from tb_sequence order by id_sequence desc limit 1;";
+        $sql = "select id_sequence from tb_sequence_dn order by id_sequence desc limit 1;";
         $consulta = $this->conexao->query($sql);
         $maiorid = $consulta->fetchAll(PDO::FETCH_ASSOC);
-
         
         if (!$maiorid){
-            throw new Exception("Maior id não localizado");
+            $maiorid = 1;
+        }else{
+            $maiorid = $maiorid[0]['id_sequence'] + 1;
         }
-        
-        $novoid = $maiorid[0]['id_sequence'] + 1;
-        $sqlseq ="INSERT INTO tb_sequence (id_sequence, nm_sequence) VALUES (".$novoid.", 'U')";
+
+        $sqlseq ="INSERT INTO tb_sequence_dn (id_sequence, nm_sequence) VALUES (".$maiorid.", 'U')";
         $insertseq = $this->conexao->query($sqlseq);
         $responseseq = $insertseq->fetchAll(PDO::FETCH_ASSOC);
+
+        $metodo_criptografia = 'aes-256-cbc';
+        $chave = 'sua_chave_secreta_de_32_bytes';
+        $iv = '1234567891234567';
+        $criptografia = openssl_encrypt($vl_senha, $metodo_criptografia, $chave, 0, $iv);
+
         if (!$responseseq){throw new Exception("Não foi possível criar a sequence do usuario");}
         
-        $sqluser = "INSERT INTO tb_usuario (id_usuario, nu_cpf, nm_usuario, vl_email, nm_sobrenome, vl_senha) 
-        VALUES (:id_usuario, :nu_cpf, :nm_usuario, :vl_email, :nm_sobrenome, :vl_senha)";
+        $sqluser = "INSERT INTO tb_usuario_dn (id_usuario, nu_cpf, nm_usuario, fl_anfitriao, vl_email, nm_sobrenome, vl_senha) 
+        VALUES (:id_usuario, :nu_cpf, :nm_usuario, :fl_anfitriao, :vl_email, :nm_sobrenome, :vl_senha)";
         
         $insertuser = $this->conexao->prepare($sqluser);
         
-        $insertuser->bindValue(':id_usuario', $novoid, PDO::PARAM_INT);
+        $insertuser->bindValue(':id_usuario', $maiorid, PDO::PARAM_INT);
         $insertuser->bindValue(':nu_cpf', $nu_cpf, PDO::PARAM_STR);
         $insertuser->bindValue(':nm_usuario', $nm_usuario, PDO::PARAM_STR);
+        $insertuser->bindValue(':fl_anfitriao', 'false', PDO::PARAM_STR);
         $insertuser->bindValue(':vl_email', $vl_email, PDO::PARAM_STR);
         $insertuser->bindValue(':nm_sobrenome', $nm_sobrenome, PDO::PARAM_STR);
-        $insertuser->bindValue(':vl_senha', $vl_senha, PDO::PARAM_STR);
+        $insertuser->bindValue(':vl_senha', $criptografia, PDO::PARAM_STR);
         $insertuser->execute();
 
-        $sqlUsuarioCriado = "select * from tb_usuario where id_usuario = " . $novoid;
+        $sqlUsuarioCriado = "select * from tb_usuario_dn where id_usuario = " . $maiorid;
         $getUsuario = $this->conexao->query($sqlUsuarioCriado);
         $responseUsuarioCriado = $getUsuario->fetchAll(PDO::FETCH_ASSOC);
 
@@ -148,9 +155,9 @@ class UsuarioService extends InstanciaBanco {
 
     public function deleteUsuario($dados) {
 
-        $sqluser ="DELETE FROM tb_usuario WHERE id_usuario = ".$dados["id_usuario"];
-        $insertuser = $this->conexao->query($sqluser);
-        $responseuser = $insertuser->fetchAll(PDO::FETCH_ASSOC);
+        $sqluser ="DELETE FROM tb_usuario_dn WHERE id_usuario = ".$dados["id_usuario"];
+        $deleteuser = $this->conexao->query($sqluser);
+        $responseuser = $deleteuser->fetchAll(PDO::FETCH_ASSOC);
         if (!$responseuser){throw new Exception("Não foi possível deletar usuário");}
 
         $this->banco->setMensagem(1, "Deletado com sucesso");
@@ -168,17 +175,16 @@ class UsuarioService extends InstanciaBanco {
         $vl_senha = openssl_encrypt($loginData['vl_senha'], $metodo_criptografia, $chave, 0, $iv);
         $vl_email = $loginData['vl_email'];
 
-        $sql = "SELECT id_usuario, nm_usuario, vl_email, vl_senha FROM tb_usuario WHERE vl_email = :email";
-
+        $sql = "SELECT id_usuario, nm_usuario, vl_email, vl_senha FROM tb_usuario_dn WHERE vl_email = :email";
         $consulta = $this->conexao->prepare($sql);
         $consulta->bindValue(':email', $vl_email, PDO::PARAM_STR);
         $consulta->execute();
 
         $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
 
-        if (password_verify($vl_senha, $usuario['vl_senha'])) {
+        if ($vl_senha == $usuario['vl_senha']) {
             $this->banco->setDados(1, $usuario);
-            return($usuario);
+            return("Login bem-sucedido.");
         } else {
             throw new Exception("Email ou senha inválidos.");
         }

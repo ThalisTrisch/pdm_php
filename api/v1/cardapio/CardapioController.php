@@ -1,6 +1,6 @@
 <?php
       
-    require_once('./LocalService.php');
+    require_once('./CardapioService.php');
     require_once('../../database/Banco.php');
 
     try {  
@@ -10,26 +10,24 @@
     
         $banco = new Banco(null,null,null,null,null,null);
         
-        $LocalService = new LocalService($banco);
+        $CardapioService = new CardapioService($banco);
         
         switch ($operacao) {
-            case 'getLocal':
-                $LocalService->getLocal();
+            case 'getCardapio':
+                $CardapioService->getCardapio();
                 break;   
-            case 'getLocais':
-                $LocalService->getLocais();
+            case 'getCardapios':
+                $CardapioService->getCardapios();
                 break;  
-            case 'createLocal':
-                $nu_cep = isset($_POST['nu_cep']) ? $_POST['nu_cep'] : throw new Exception("campo nu_cep não fornecido");
-                $nu_casa = isset($_POST['nu_casa']) ? $_POST['nu_casa'] : throw new Exception("campo nu_casa não fornecido");
-                $id_usuario = isset($_POST['id_usuario']) ? $_POST['id_usuario'] : throw new Exception("campo id_usuario não fornecido");
-                $nu_cnpj = isset($_POST['nu_cnpj']) ? $_POST['nu_cnpj'] : throw new Exception("campo nu_cnpj não fornecido");
-                $dc_complemento = isset($_POST['dc_complemento']) ? $_POST['dc_complemento'] : null;
-                $LocalService->createLocal($nu_cep, $nu_casa, $id_usuario, $nu_cnpj, $dc_complemento);
-                break;    
-            case 'deleteLocal':
+            case 'createCardapio':
                 $id_local = isset($_POST['id_local']) ? $_POST['id_local'] : throw new Exception("campo id_local não fornecido");
-                $LocalService->deleteLocal($id_local);
+                $ds_cardapio = isset($_POST['ds_cardapio']) ? $_POST['ds_cardapio'] : throw new Exception("campo ds_cardapio não fornecido");
+                $nm_cardapio = isset($_POST['nm_cardapio']) ? $_POST['nm_cardapio'] : throw new Exception("campo nm_cardapio não fornecido");
+                $CardapioService->createCardapio($id_local, $ds_cardapio, $nm_cardapio);
+                break;    
+            case 'deleteCardapio':
+                $id_cardapio = isset($_POST['id_cardapio']) ? $_POST['id_cardapio'] : throw new Exception("campo id_cardapio não fornecido");
+                $CardapioService->deleteCardapio($id_cardapio);
                 break; 
             default:
                 $banco->setMensagem(1, 'Operação informada não tratada. Operação=' . $operacao);
