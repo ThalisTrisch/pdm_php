@@ -29,6 +29,9 @@
                 $id_cardapio = isset($_POST['id_cardapio']) ? $_POST['id_cardapio'] : throw new Exception("campo id_cardapio não fornecido");
                 $CardapioService->deleteCardapio($id_cardapio);
                 break; 
+            case 'getCardapiosDisponiveis':
+                $CardapioService->getCardapiosDisponiveis();
+                break;
             default:
                 $banco->setMensagem(1, 'Operação informada não tratada. Operação=' . $operacao);
                 break;
