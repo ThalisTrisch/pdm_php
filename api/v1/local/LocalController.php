@@ -31,6 +31,11 @@
                 $id_local = isset($_POST['id_local']) ? $_POST['id_local'] : throw new Exception("campo id_local não fornecido");
                 $LocalService->deleteLocal($id_local);
                 break; 
+
+            case 'getMeusLocais':
+                $id_usuario = isset($_GET['id_usuario']) ? $_GET['id_usuario'] : throw new Exception("campo id_usuario não fornecido");
+                $LocalService->getMeusLocais($id_usuario);
+                break;
             default:
                 $banco->setMensagem(1, 'Operação informada não tratada. Operação=' . $operacao);
                 break;

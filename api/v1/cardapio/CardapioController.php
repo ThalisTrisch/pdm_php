@@ -32,6 +32,9 @@
             case 'getCardapiosDisponiveis':
                 $CardapioService->getCardapiosDisponiveis();
                 break;
+            case 'getMeuCardapio': 
+                $id_local = isset($_GET['id_local']) ? $_GET['id_local'] : throw new Exception("campo id_local não fornecido");
+                $CardapioService->getMeuCardapio($id_local);
             default:
                 $banco->setMensagem(1, 'Operação informada não tratada. Operação=' . $operacao);
                 break;

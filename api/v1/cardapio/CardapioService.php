@@ -107,6 +107,30 @@ class CardapioService extends InstanciaBanco {
         return $resultados;
     }
 
+    public function getMeuCardapio($idLocal) {
+        $sql = "SELECT 
+                    id_cardapio, 
+                    ds_cardapio, 
+                    nm_cardapio, 
+                    preco_refeicao 
+                FROM tb_cardapio_dn 
+                WHERE id_local = :idLocal";
+    
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindParam(':idLocal', $idLocal, PDO::PARAM_INT);
+        $consulta->execute();
+    
+        $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
+    
+        if ($resultados) {
+            $this->banco->setDados(count($resultados), $resultados);
+        } else {
+            $this->banco->setDados(0, []);
+        }
+    
+        return $resultados;
+    }
+    
     // Exemplo de rotas na url:
     // http://Cardapiohost/pdm/api/v1/refeicao/RefeicaoController.php/?operacao=getRefeicoes
     // http://Cardapiohost/pdm/api/v1/refeicao/RefeicaoController.php/?operacao=getRefeicao&id_refeicao=2

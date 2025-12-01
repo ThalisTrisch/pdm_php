@@ -66,7 +66,6 @@ class LocalService extends InstanciaBanco {
         return $resultados;
     }
     
-    
     public function deleteLocal($id_local) {
         $sql = "DELETE FROM tb_local_dn WHERE id_local = ".$id_local;
 
@@ -76,6 +75,27 @@ class LocalService extends InstanciaBanco {
 
         $this->banco->setMensagem(1, "Deletado com sucesso");
         return $responseuser;
+    }
+
+    public function getMeusLocais($idUsuario) {
+
+        $sql = "
+            SELECT *
+            FROM tb_local_dn a
+            INNER JOIN tb_usuario_dn b 
+                ON a.id_usuario = b.id_usuario
+            WHERE a.id_usuario = :idUsuario
+        ";
+    
+        $consulta = $this->conexao->prepare($sql);
+        $consulta->bindValue(":idUsuario", $idUsuario, PDO::PARAM_INT);
+        $consulta->execute();
+    
+        $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
+    
+        $this->banco->setDados(count($resultados), $resultados ?: []);
+    
+        return $resultados;
     }
 
     // Exemplo de rotas na url:
